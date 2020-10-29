@@ -12,12 +12,14 @@ Replace the mongoDB URI string in 'config/config.env' with your own (Local Or Cl
 
 You can also change the PORT (Thus if its currently in Use);
 
+Create a folder call 'uploads' in the root.
+
 Run "npm run dev" to start the server.
-Goto this route:'http://localhost:{PORT HERE}/videotube/createAdmin'.
+Goto this route:' localhost:{PORT HERE}/videotube/createAdmin'.
 Copy the email and password.
 
-PUBLIC VIEW ROUTE: http://localhost:{PORT HERE}/videotube
-ADMIN ROUTE : http://localhost:{PORT HERE}/videotube/admin
+PUBLIC VIEW ROUTE: localhost:{PORT HERE}/videotube
+ADMIN ROUTE : localhost:{PORT HERE}/videotube/admin
 
 
 楽しい
