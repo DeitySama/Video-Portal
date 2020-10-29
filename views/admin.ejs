@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600;700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/resources/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/resources/styles.css">
+    <title>Video Tube</title>
+</head>
+
+<body>
+    <section class="main">
+        <nav class="navbar navbar-expand-lg nb">
+          <a class="navbar-brand nbb" href="#"><span>Video</span>Tube</a>
+            <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                      <a class="nav-link" data-toggle="modal" data-target="#uploadModal" href>Upload Tutorial</a>
+                    </li>
+                    <li class="nav-item active">
+                      <a class="nav-link" href="#">Other Portals</a>
+                    </li>
+                    <li class="nav-item active dropdown">
+                        <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
+                            <span class="firstChar">
+                                <%= userObj.payload.email.charAt(0)%>
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item text-center mb-2">
+                                <span class="firstChar">
+                                    <%= userObj.payload.email.charAt(0)%>
+                                </span>
+                                <p class="d-block m-0 mt-4 text-secondary"><%= userObj.payload.email %> </p>
+                                <small class="text-capitalize"><%= userObj.payload.role %> </small>
+                            </a>
+                            <a class="dropdown-item" href="/api/v1/users/logout">Log Out</a>
+                        </ul>
+                    </li>
+                  </ul>
+            </div>
+          </nav>
+          <section class="search p-3">
+            <form id="search">
+              <div class="row">
+                <div class="col-md-12 mt-2">
+                  <input type="text" id="query" class="w-100 query" placeholder="Search">
+                </div>
+
+              </div>
+            </form>
+
+            <ul class="list-group  mt-2" id="queryRes">
+
+            </ul>
+          </section>
+
+          <div class="w-100" id="comment"></div>
+          <section class="modals">
+            <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="uploadModalLabel">Upload Tutorial</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="upload">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text" id="fileAddon01">Upload</span>
+                                </div>
+                                <div class="custom-file">
+                                  <input type="file" class="custom-file-input" id="file" aria-describedby="fileAddon01">
+                                  <label class="custom-file-label" for="file">Choose file</label>
+                                </div>
+                              </div>
+
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Tutorial Title</label>
+                                <input type="text" class="form-control" id="name" name="name" aria-describedby="emailHelp">
+                              </div>
+
+                              <div class="form-group">
+                                <label for="exampleInputEmail1">Description</label>
+                                <textarea type="text" class="form-control" id="description" name="description" aria-describedby="emailHelp">   
+                                </textarea>
+                            </div>
+                            <div class="form-group">
+                              <button class="btn btn-primary btn-block">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="modal fade" id="viewTut" tabindex="-1" aria-labelledby="viewTutLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="viewTutLabel">View Tutorial</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="p-2" id="tutorial"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal fade" id="loader" tabindex="-1" aria-labelledby="loaderLabel" aria-hidden="true">
+                <div class="modal-dialog modal-xl">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="p-2" id="loaderContainer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          <section class="p-3">
+            <div class="row" id="content" >
+  
+          </div>
+          </section>
+        </section>
+</body>
+
+<script src="/resources/axios.min.js"></script>
+<script src="/resources/jquery-3.5.1.slim.min.js"></script>
+<script src="/resources/popper.min.js" ></script>
+<script src="/resources/bootstrap.min.js"></script>
+
+<script>
+    const upload = document.getElementById('upload');
+    const content = document.getElementById('content');
+    const file = document.getElementById('file');
+    const tutorial = document.getElementById('tutorial');
+    const loaderContainer = document.getElementById('loaderContainer');
+    const search = document.getElementById('search');
+    const queryRes = document.getElementById('queryRes');
+    const comment = document.getElementById('comment');
+
+    let itemTitles =[];
+    const getTuts=()=>{
+      content.innerHTML =``;    
+      axios.get('/api/video').then(res=>{
+        if(res.data.count>0){
+          const items = res.data.data;
+          items.forEach(item=>{
+              render(item);
+              const title= item.name.trim().toLowerCase();
+              itemTitles.push({name:title,_id:item._id});
+          })
+        }
+        else{
+          comment.innerHTML =`<div class="w-100 text-center"><p class="text-secondary">No Videos Uploaded yet</p></div>`;
+        }
+      })
+    } ;
+
+    getTuts();
+    
+
+    upload.addEventListener('submit',(e)=>{
+        e.preventDefault();
+
+        const name = upload['name'].value;
+        const description = upload['description'].value;
+        const fileValue = upload['file'];
+        
+         const file = new FormData();
+
+         file.append('file',fileValue.files[0]);
+         
+         $('#loader').modal('show');
+         loaderContainer.innerHTML =`<div class="container text-center">
+          <image class="img-responsive" src="/resources/load.gif"/>
+          <h4>Uploading File ....</h4>
+          </div`
+         axios.post('/api/v1/uploads',file).then((res)=>{           
+                  const path = res.data.path;
+                 axios.post('/api/video',{name,description,path}).then(res=>{
+                loaderContainer.innerHTML =`<div class="container text-center">
+                <image class="img-responsive" src="/resources/complete.gif"/>
+                <h4>Done</h4>
+                <button type="button" class="btn btn-primary mt-2" data-dismiss="modal" aria-label="Close">
+                        Close
+                      </button>
+                </div
+                
+                `;
+                    comment.innerHTML =``;
+                    render(res.data.data);
+                    upload.reset();
+                    $('#uploadModal').modal('hide');
+                 })
+             
+         })
+    }); 
+
+    const render = (item)=>{
+        let html = 
+            `
+            <div class="col-md-4 mt-4" id="item" data-id="${item._id}">
+            <div class="card">
+              <div class="video-container w-100">
+                <video src="${item.path}" id="view" data-id="${item._id}" data-toggle="modal" data-target="#viewTut"  class="w-100"></video>
+              </div>
+            <div class="card-body">
+              <div class="w-100">
+                <span class="card-title float-left" id="view" data-id="${item._id}" data-toggle="modal" data-target="#viewTut" data-query=${item.name}>${item.name}</span>
+                <span class="float-right options">
+                  <div class="dropdown show">
+                        <a class="options" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          &#8942
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                          <a  class="dropdown-item"  id="view" data-id="${item._id}" data-toggle="modal" data-target="#viewTut">Watch</a>
+                         <a class="dropdown-item" data-id="${item._id}"  data-path="${item.path}"  id="remove">Delete</a>
+                        </div>
+                      </div>  
+                </span>
+              </div>
+                <p class="card-text text-secondary">${item.description}</p>
+               
+            </div>
+            </div>
+         </div>
+            `
+            content.innerHTML += html
+    }
+
+    content.addEventListener('click',(e)=>{
+      if(e.target.id == 'view'){
+         const _id = e.target.getAttribute('data-id');
+         axios.get(`/api/video/${_id}`).then(res=>{
+            renderView(res.data.data);
+         })
+      }
+      else if(e.target.id == 'remove'){
+        const _id = e.target.getAttribute('data-id');
+        const path = e.target.getAttribute('data-path');
+        axios.post('/api/v1/uploads/path',{path:path}).then((res)=>{
+          axios.delete(`/api/video/${_id}`).then(res=>{
+            const element = $(`#item[data-id='${_id}']`);
+            element.remove();
+            getTuts();
+         })
+        })
+      }
+    })
+
+    const renderView =(item)=>{
+      let html =
+        ` 
+        <div>
+          <div class="playvidcontainer">
+          <video src="${item.path}" id="tut" class="w-100" controls autoplay></video>
+          </div>
+          <div class="mt-4">
+            <h5 class="card-title">${item.name}</h5>
+          </div>
+          <div class="text-secondary">
+            <p class="card-text">${item.description}</p>
+          </div>
+         </div>
+        `;
+
+        tutorial.innerHTML = html;
+    }
+
+    $('#viewTut').on('hidden.bs.modal', function (e) {
+        $('#tut').get(0).pause();
+    })
+
+
+       
+           ///File Url Fix
+    $('#file').on('change', function () {
+        //get the file name
+        var fileName = $(this).val();
+        //replace the "Choose a file" label
+        $(this).next('.custom-file-label').html(fileName);
+    });
+
+    search.addEventListener('input',(e)=>{
+        e.preventDefault();
+         let query = search['query'].value;
+        
+        if(query && query.trim().length>0){
+          query = query.trim().toLowerCase();
+          setList(
+            itemTitles.filter(item=>{
+                return item.name.includes(query);
+              }).sort((itemA,itemB)=>{
+                return getRelevancy(itemA.name, query) - getRelevancy(itemB.name, query);   
+            })
+          )
+                       
+          
+        }
+        else{
+          queryRes.innerHTML=``;
+          itemTitles=[];
+          getTuts();
+        }
+    })
+
+    function setList(group){
+         clearList();
+
+        for(const person of group){
+          const item = document.createElement('li');
+          item.classList.add("list-group-item");
+          item.classList.add("queryRes");
+          item.setAttribute("id","view");
+          item.setAttribute("data-id",person._id);
+          item.setAttribute("data-toggle","modal");
+          item.setAttribute("data-target","#viewTut");
+          const text = document.createTextNode(person.name);
+          item.appendChild(text);
+          queryRes.appendChild(item);
+        }
+
+        if(group.length === 0){
+          comment.innerHTML =`<div class="w-100 text-center"><p class="text-secondary">Item not found</p></div>`;
+        }else{
+          comment.innerHTML =``;
+        }
+  };
+
+const getRelevancy= (value, searchTerm)=>{
+          if(value === searchTerm){
+            return 2;
+        } else if(value.startsWith(searchTerm)){
+        return 1;
+      }else if (value.includes(searchTerm)){
+        return 0;
+      }else{
+        return -1;
+      }
+
+}
+
+
+function clearList(){
+  while(queryRes.firstChild){
+    queryRes.removeChild(queryRes.firstChild);
+  }
+};
+
+
+queryRes.addEventListener('click',(e)=>{
+  if(e.target.id == "view"){
+    const _id = e.target.getAttribute('data-id');
+         axios.get(`/api/video/${_id}`).then(res=>{
+            renderView(res.data.data);
+         })
+  }
+})
+</script>
+
+</html>

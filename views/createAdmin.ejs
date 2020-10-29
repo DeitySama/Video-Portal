@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/resources/bootstrap.min.css">
+    <title>Create Admin</title>
+</head>
+<body>
+    <div id="app" class="p-3">
+
+    </div>
+</body>
+<script src="/resources/axios.min.js"></script>
+<script>
+    const app = document.getElementById('app');
+    const body= {email:'vidadmin@email.com',name:'vidadmin',password:'12345678',password2:'12345678'};
+    axios.post(`/api/v1/users/register`,body).then(res=>{
+        const data = res.data.user;
+        let html =
+        `<div class="alert alert-primary" role="alert">
+               ${'Email: '+data.email+ ',  Password :'+body.password};
+         </div>`;
+        app.innerHTML = html;
+    }).catch(err=>{
+        let html =
+        `<div class="alert alert-primary" role="alert">
+               ${err};
+         </div>`;
+        app.innerHTML = html;
+    });
+</script>
+</html>
