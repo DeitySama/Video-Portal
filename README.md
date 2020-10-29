@@ -12,7 +12,7 @@ Replace the mongoDB URI string in 'config/config.env' with your own (Local Or Cl
 
 You can also change the PORT (Thus if its currently in Use);
 
-Create a folder call 'uploads' in the root.
+Create a folder called 'uploads' in the root.
 
 Run "npm run dev" to start the server.
 Goto this route:' localhost:{PORT HERE}/videotube/createAdmin'.
