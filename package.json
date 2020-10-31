@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "brcypt": "^1.0.1",
     "colors": "^1.4.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.5",
